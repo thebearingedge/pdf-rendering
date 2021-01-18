@@ -1,0 +1,13 @@
+.container {
+  display: inline-block;
+  position: relative;
+}
+
+.no-select {
+  position: absolute;
+  top: 0;
+  right: 1.5rem;
+  bottom: 0;
+  left: 0;
+  z-index: 9999;
+}
