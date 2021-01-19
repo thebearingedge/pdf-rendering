@@ -1,13 +1,38 @@
-.container {
-  display: inline-block;
-  position: relative;
+body {
+  margin: 0;
+  font-family: sans-serif;
 }
 
-.no-select {
-  position: absolute;
-  top: 0;
-  right: 1.5rem;
-  bottom: 0;
-  left: 0;
-  z-index: 9999;
+canvas {
+  display: block;
+  margin: 0 auto;
+}
+
+.controls,
+.page-number {
+  width: calc(100% / 3);
+}
+
+.controls {
+  text-align: right;
+}
+
+.page-number {
+  text-align: center;
+}
+
+i {
+  margin: 0 1rem;
+  cursor: pointer;
+}
+
+nav {
+  color: white;
+  font-size: 1.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background-color: #343a40;
+  user-select: none;
 }

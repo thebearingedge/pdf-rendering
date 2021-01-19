@@ -3,13 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Private PDF</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <iframe src="turing-test.pdf#toolbar=0" frameborder="0" width="980" height="660"></iframe>
-    <div class="no-select"></div>
-  </div>
+  <nav>
+    <div class="page-number">
+      1
+    </div>
+    <div class="controls">
+      <i id="prev" class="fas fa-arrow-left"></i>
+      <i id="next" class="fas fa-arrow-right"></i>
+    </div>
+  </nav>
+  <canvas id="pdf-display"></canvas>
+  <script src="node_modules/pdfjs-dist/build/pdf.js"></script>
+  <script>
+    let currentPage = 1
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'node_modules/pdfjs-dist/build/pdf.worker.js'
+    const $canvas = document.querySelector('#pdf-display')
+    const $pageNumber = document.querySelector('.page-number')
+
+    ;(async () => {
+      const pdf = await pdfjsLib.getDocument('turing-test.pdf').promise
+      await renderPageByNumber(pdf, currentPage, $canvas)
+      document.querySelector('#next').addEventListener('click', async event => {
+        if (currentPage < pdf.numPages) currentPage++
+        await renderPageByNumber(pdf, currentPage, $canvas)
+        $pageNumber.textContent = currentPage + ' / ' + pdf.numPages
+      })
+      document.querySelector('#prev').addEventListener('click', async event => {
+        if (currentPage > 1) currentPage--
+        await renderPageByNumber(pdf, currentPage, $canvas)
+        $pageNumber.textContent = currentPage + ' / ' + pdf.numPages
+      })
+    })().catch(err => {
+      console.error(err)
+    })
+
+
+    async function renderPageByNumber(pdf, pageNumber, $canvas) {
+      const page = await pdf.getPage(pageNumber)
+      var viewport = page.getViewport({ scale: window.devicePixelRatio || 1 })
+      $canvas.style.width = viewport.width + 'px'
+      $canvas.style.height = viewport.height + 'px'
+      $canvas.width = viewport.width * window.devicePixelRatio
+      $canvas.height = viewport.height * window.devicePixelRatio
+      const canvasContext = $canvas.getContext('2d')
+      await page.render({
+        viewport,
+        canvasContext,
+        transform: [window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0]
+      }).promise
+    }
+  </script>
 </body>
 </html>
